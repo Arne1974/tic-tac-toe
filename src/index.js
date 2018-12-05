@@ -21,7 +21,7 @@ class Board extends React.Component {
       [3, 4, 5],
       [6, 7, 8],
     ];
-    
+
     return (
       <div>
         {coords.map((row, row_index) =>
@@ -82,9 +82,10 @@ class Game extends React.Component {
       const desc = move ?
         'Go to move #' + move :
         'Go to game start';
+      
       return (
         <li key={move}>
-          <button onClick={() => this.jumpTo(move)}>{desc}</button>
+          <button onClick={() => this.jumpTo(move)} className={step.squares === current.squares ? 'active': ''}>{desc}</button>
         </li>
       );
     });
