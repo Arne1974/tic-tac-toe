@@ -46,6 +46,40 @@ ul {
   flex-direction: row;
 }
 
+.game-history {
+  border: 1px solid #999;
+  border-radius: 4px;
+  padding: 4px;
+}
+
+.game-history .sort-handler {
+  display: flex;
+  justify-content: flex-end;
+  border-bottom: 1px solid #999;
+}
+
+.game-history .sort-handler span:first-of-type {
+  flex-grow: 1;
+}
+
+.game-history .sort-handler .sort {
+  cursor: pointer;
+}
+
+.game-history .sort-handler .sort.sort-up {text-decoration: none}
+.game-history .sort-handler .sort.sort-down {text-decoration: underline}
+.game-history.reverse .sort-handler .sort.sort-up {text-decoration: underline}
+.game-history.reverse .sort-handler .sort.sort-down {text-decoration: none}
+
+.game-history ol {
+  display: flex;
+  flex-direction: column;
+}
+
+.game-history.reverse ol {
+  flex-direction: column-reverse;
+}
+
 .game-info {
   margin-left: 20px;
 }

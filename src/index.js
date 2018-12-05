@@ -46,6 +46,7 @@ class Game extends React.Component {
       }],
       stepNumber: 0,
       xIsNext: true,
+      sortAscending: true,
     };
   }
 
@@ -70,6 +71,12 @@ class Game extends React.Component {
     this.setState({
       stepNumber: step,
       xIsNext: (step % 2) === 0,
+    });
+  }
+
+  flipSort(direction) {
+    this.setState({
+      sortAscending: direction==='desc'? false: true
     });
   }
 
@@ -104,7 +111,15 @@ class Game extends React.Component {
         </div>
         <div className="game-info">
           <div>{status}</div>
-          <ol>{moves}</ol>
+          <div className={this.state.sortAscending? 'game-history': 'game-history reverse'}>
+            <div className="sort-handler">
+              <span className="caption">Sorting:</span>
+              <span className="sort sort-up" onClick={() => this.flipSort('asc')}>up</span>
+              <span className="separator">|</span>
+              <span className="sort sort-down" onClick={() => this.flipSort('desc')}>down</span>
+            </div>
+            <ol>{moves}</ol>
+          </div>
         </div>
       </div>
     );
