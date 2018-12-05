@@ -12,25 +12,20 @@ function Square(props) {
 }
 
 class Board extends React.Component {
-  renderSquare(i) {
+  renderSquare(i, row_index) {
     const hasWinner = (this.props.winner && this.props.winner.solution.includes(i)) ? true: false;
-    console.log(hasWinner)
-    return <Square value={this.props.squares[i]} onClick={() => this.props.onClick(i)} key={i} winner={hasWinner} />;
+    const coord = row_index + "/" + i;
+
+    return <Square value={this.props.squares[i]} onClick={() => this.props.onClick(i)} key={i} winner={hasWinner} coord={coord} />;
   }
 
   render() {
-    const coords = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-    ];
-    
     return (
       <div>
-        {coords.map((row, row_index) =>
+        {this.props.coords.map((row, row_index) =>
           <div className="board-row" key={row_index}>
             {row.map((col) =>
-              this.renderSquare(col)
+              this.renderSquare(col, row_index)
             )}
           </div>
         )}
@@ -45,12 +40,19 @@ class Game extends React.Component {
 
     this.state = {
       history: [{
-        squares: Array(9).fill(null)
+        squares: Array(9).fill(null),
+        coordIndex: null,
       }],
       stepNumber: 0,
       xIsNext: true,
       sortAscending: true,
     };
+
+    this.coords = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+    ];
   }
 
   handleClick(i) {
@@ -64,6 +66,7 @@ class Game extends React.Component {
     this.setState({
       history: history.concat([{
         squares: squares,
+        coordIndex: i,
       }]),
       stepNumber: history.length,
       xIsNext: !this.state.xIsNext,
@@ -79,8 +82,18 @@ class Game extends React.Component {
 
   flipSort(direction) {
     this.setState({
-      sortAscending: direction==='desc'? false: true
+      sortAscending: direction === 'desc'? false: true
     });
+  }
+
+  getCoordsFromIndex(coordIndex) {
+    let newCoords = ''
+    this.coords.forEach((value, index) => {
+      if(value.includes(coordIndex)) {
+        newCoords = (index + 1) + '/' + (value.indexOf(coordIndex) + 1);
+      }
+    });
+    return newCoords;
   }
 
   render() {
@@ -89,8 +102,9 @@ class Game extends React.Component {
     const winner = calculateWinner(current.squares);
 
     const moves = history.map((step, move) => {
+      const coordIndex = step.coordIndex;
       const desc = move ?
-        'Go to move #' + move :
+        'Go to move #' + move + ' (' + this.getCoordsFromIndex(coordIndex) + ')':
         'Go to game start';
       
       return (
@@ -114,7 +128,7 @@ class Game extends React.Component {
     return (
       <div className="game">
         <div className="game-board">
-          <Board squares={current.squares} onClick={(i) => this.handleClick(i)} winner={winner} />
+          <Board squares={current.squares} coords={this.coords} onClick={(i) => this.handleClick(i)} winner={winner} />
         </div>
         <div className="game-info">
           <div>{status}</div>
