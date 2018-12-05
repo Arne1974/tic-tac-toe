@@ -3,8 +3,9 @@ import ReactDOM from 'react-dom';
 import './index.css';
 
 function Square(props) {
+  const classes = props.winner ? 'square active': 'square';
   return (
-    <button className="square" onClick={props.onClick}>
+    <button className={classes} onClick={props.onClick}>
       {props.value}
     </button>
   );
@@ -12,7 +13,9 @@ function Square(props) {
 
 class Board extends React.Component {
   renderSquare(i) {
-    return <Square value={this.props.squares[i]} onClick={() => this.props.onClick(i)} key={i} />;
+    const hasWinner = (this.props.winner && this.props.winner.solution.includes(i)) ? true: false;
+    console.log(hasWinner)
+    return <Square value={this.props.squares[i]} onClick={() => this.props.onClick(i)} key={i} winner={hasWinner} />;
   }
 
   render() {
@@ -21,7 +24,7 @@ class Board extends React.Component {
       [3, 4, 5],
       [6, 7, 8],
     ];
-
+    
     return (
       <div>
         {coords.map((row, row_index) =>
@@ -99,20 +102,19 @@ class Game extends React.Component {
 
     let status;
     if (winner) {
-      status = 'winner: ' + winner;
+      status = 'Winner: ' + winner.player;
     } else {
       if(history.length <= 9) {
         status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
       } else {
         status = 'No winner after ' + history.length + ' steps!';
       }
-      
     }
 
     return (
       <div className="game">
         <div className="game-board">
-          <Board squares={current.squares} onClick={(i) => this.handleClick(i)} />
+          <Board squares={current.squares} onClick={(i) => this.handleClick(i)} winner={winner} />
         </div>
         <div className="game-info">
           <div>{status}</div>
@@ -145,7 +147,10 @@ function calculateWinner(squares) {
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+      return {
+        solution: lines[i],
+        player: squares[a],
+      }
     }
   }
   return null;
