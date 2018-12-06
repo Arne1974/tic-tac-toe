@@ -90,7 +90,7 @@ class Game extends React.Component {
     let newCoords = ''
     this.coords.forEach((value, index) => {
       if(value.includes(coordIndex)) {
-        newCoords = (index + 1) + '/' + (value.indexOf(coordIndex) + 1);
+        newCoords = (value.indexOf(coordIndex) + 1) + '/' + (index + 1);
       }
     });
     return newCoords;
