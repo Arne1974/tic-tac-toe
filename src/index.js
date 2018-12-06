@@ -3,32 +3,35 @@ import ReactDOM from 'react-dom';
 import './index.css';
 
 function Square(props) {
-  const classes = props.winner ? 'square active': 'square';
+  const squareClass = props.winner ? 'square active' : 'square';
+
   return (
-    <button className={classes} onClick={props.onClick}>
+    <button className={squareClass} onClick={props.onClick}>
       {props.value}
     </button>
   );
 }
 
 class Board extends React.Component {
-  renderSquare(i, row_index) {
-    const hasWinner = (this.props.winner && this.props.winner.solution.includes(i)) ? true: false;
-    const coord = row_index + "/" + i;
 
-    return <Square value={this.props.squares[i]} onClick={() => this.props.onClick(i)} key={i} winner={hasWinner} coord={coord} />;
+  renderSquare(i) {
+    const hasWinner = (this.props.winner && this.props.winner.solution.includes(i)) ? true : false;
+
+    return <Square value={this.props.squares[i]} onClick={() => this.props.onClick(i)} key={i} winner={hasWinner} />;
   }
 
   render() {
     return (
       <div>
-        {this.props.coords.map((row, row_index) =>
-          <div className="board-row" key={row_index}>
-            {row.map((col) =>
-              this.renderSquare(col, row_index)
-            )}
-          </div>
-        )}
+        {
+          this.props.coords.map((row, row_index) =>
+            <div className="board-row" key={row_index}>
+              {
+                row.map((col) =>
+                  this.renderSquare(col)
+              )}
+            </div>
+          )}
       </div>
     );
   }
@@ -82,14 +85,14 @@ class Game extends React.Component {
 
   flipSort(direction) {
     this.setState({
-      sortAscending: direction === 'desc'? false: true
+      sortAscending: direction === 'desc' ? false : true
     });
   }
 
   getCoordsFromIndex(coordIndex) {
     let newCoords = ''
     this.coords.forEach((value, index) => {
-      if(value.includes(coordIndex)) {
+      if (value.includes(coordIndex)) {
         newCoords = (value.indexOf(coordIndex) + 1) + '/' + (index + 1);
       }
     });
@@ -104,12 +107,13 @@ class Game extends React.Component {
     const moves = history.map((step, move) => {
       const coordIndex = step.coordIndex;
       const desc = move ?
-        'Go to move #' + move + ' (' + this.getCoordsFromIndex(coordIndex) + ')':
+        'Go to move #' + move + ' (' + this.getCoordsFromIndex(coordIndex) + ')' :
         'Go to game start';
-      
+
+      const squareClass = step.squares === current.squares ? 'active' : '';
       return (
         <li key={move}>
-          <button onClick={() => this.jumpTo(move)} className={step.squares === current.squares ? 'active': ''}>{desc}</button>
+          <button onClick={() => this.jumpTo(move)} className={squareClass}>{desc}</button>
         </li>
       );
     });
@@ -118,12 +122,14 @@ class Game extends React.Component {
     if (winner) {
       status = 'Winner: ' + winner.player;
     } else {
-      if(history.length <= 9) {
+      if (history.length <= 9) {
         status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
       } else {
         status = 'No winner after ' + history.length + ' steps!';
       }
     }
+
+    const gameHistoryClass = this.state.sortAscending ? 'game-history' : 'game-history reverse';
 
     return (
       <div className="game">
@@ -132,7 +138,7 @@ class Game extends React.Component {
         </div>
         <div className="game-info">
           <div>{status}</div>
-          <div className={this.state.sortAscending? 'game-history': 'game-history reverse'}>
+          <div className={gameHistoryClass}>
             <div className="sort-handler">
               <span className="caption">Sorting:</span>
               <span className="sort sort-up" onClick={() => this.flipSort('asc')}>up</span>
