@@ -24,8 +24,8 @@ class Board extends React.Component {
     return (
       <div>
         {
-          this.props.coords.map((row, row_index) =>
-            <div className="board-row" key={row_index}>
+          this.props.coords.map((row, row_index) => 
+            <div className="board-row" key={row_index} data-line={row_index + 1}>
               {
                 row.map((col) =>
                   this.renderSquare(col)
@@ -49,13 +49,12 @@ class Game extends React.Component {
       stepNumber: 0,
       xIsNext: true,
       sortAscending: true,
+      coords: [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+      ],
     };
-
-    this.coords = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-    ];
   }
 
   handleClick(i) {
@@ -91,9 +90,10 @@ class Game extends React.Component {
 
   getCoordsFromIndex(coordIndex) {
     let newCoords = ''
-    this.coords.forEach((value, index) => {
+    const coordLeft = ['A', 'B', 'C']
+    this.state.coords.forEach((value, index) => {
       if (value.includes(coordIndex)) {
-        newCoords = (value.indexOf(coordIndex) + 1) + '/' + (index + 1);
+        newCoords = coordLeft[value.indexOf(coordIndex)] + (index + 1)
       }
     });
     return newCoords;
@@ -134,7 +134,12 @@ class Game extends React.Component {
     return (
       <div className="game">
         <div className="game-board">
-          <Board squares={current.squares} coords={this.coords} onClick={(i) => this.handleClick(i)} winner={winner} />
+          <section className="game-coord-row">
+            <article>A</article>
+            <article>B</article>
+            <article>C</article>
+          </section>
+          <Board squares={current.squares} coords={this.state.coords} onClick={(i) => this.handleClick(i)} winner={winner} />
         </div>
         <div className="game-info">
           <div>{status}</div>

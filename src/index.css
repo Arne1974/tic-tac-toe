@@ -14,6 +14,19 @@ ul {
   display: table;
 }
 
+.board-row:before {
+  content: attr(data-line);
+  position: relative;
+  left: -112px;
+  top: 7px;
+}
+
+.game-coord-row {
+  display: flex;
+  justify-content: space-around;
+  margin-right: 8px;
+}
+
 .status {
   margin-bottom: 10px;
 }
