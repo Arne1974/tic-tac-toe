@@ -26,9 +26,8 @@ class Board extends React.Component {
         {
           this.props.coords.map((row, row_index) => 
             <div className="board-row" key={row_index} data-line={row_index + 1}>
-              {
-                row.map((col) =>
-                  this.renderSquare(col)
+              {row.map((col) =>
+                this.renderSquare(col)
               )}
             </div>
           )}
